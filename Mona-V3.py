@@ -98,13 +98,13 @@ reviews_test = []
 labels_train = []
 labels_test = []
 
-file_list = glob.glob('./train/pos/*.txt')
+file_list = glob.glob('C:/Users/grego/Documents/train/train/pos/*.txt')
 for file_path in file_list:
     with open(file_path, errors='ignore') as f_input:
         reviews_train.append(f_input.read())
         labels_train.append('pos')
 
-file_list = glob.glob('./train/neg/*.txt')
+file_list = glob.glob('C:/Users/grego/Documents/train/train/neg/*.txt')
 for file_path in file_list:
     with open(file_path, errors='ignore') as f_input:
         reviews_train.append(f_input.read())

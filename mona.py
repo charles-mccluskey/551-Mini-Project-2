@@ -79,66 +79,66 @@ class BernoulliNBClassifier(object):
 
         return pred_class
 
+if __name__ == '__main__':
+    ###Read and pre-process data (clean stop words and convert to lower cases)
+    reviews_train = []
+    reviews_test = []
+    labels_train = []
+    labels_test = []
 
-###Read and pre-process data (clean stop words and convert to lower cases)
-reviews_train = []
-reviews_test = []
-labels_train = []
-labels_test = []
+    file_list = glob.glob('./train/pos/*.txt')
+    for file_path in file_list:
+        with open(file_path, errors='ignore') as f_input:
+            reviews_train.append(f_input.read())
+            labels_train.append('pos')
 
-file_list = glob.glob('./train/pos/*.txt')
-for file_path in file_list:
-    with open(file_path, errors='ignore') as f_input:
-        reviews_train.append(f_input.read())
-        labels_train.append('pos')
+    file_list = glob.glob('./train/neg/*.txt')
+    for file_path in file_list:
+        with open(file_path, errors='ignore') as f_input:
+            reviews_train.append(f_input.read())
+            labels_train.append('neg')
 
-file_list = glob.glob('./train/neg/*.txt')
-for file_path in file_list:
-    with open(file_path, errors='ignore') as f_input:
-        reviews_train.append(f_input.read())
-        labels_train.append('neg')
+    myCo = 0
+    file_list = glob.glob('./test/*.txt')
+    for file_path in file_list:
+        with open(file_path, errors='ignore') as f_input:
+            reviews_test.append(f_input.read())
 
-myCo = 0
-file_list = glob.glob('./test/*.txt')
-for file_path in file_list:
-    with open(file_path, errors='ignore') as f_input:
-        reviews_test.append(f_input.read())
-        
-        if myCo <= 12499:
-            labels_test.append('pos')
-        else:
-            labels_test.append('neg')
-        myCo += 1
-                
-
-
-REPLACE_NO_SPACE = re.compile("(\.)|(\;)|(\:)|(\!)|(\')|(\?)|(\,)|(\")|(\()|(\))|(\[)|(\])")
-REPLACE_WITH_SPACE = re.compile("(<br\s*/><br\s*/>)|(\-)|(\/)")
+            if myCo <= 12499:
+                labels_test.append('pos')
+            else:
+                labels_test.append('neg')
+            myCo += 1
 
 
-reviews_train = [REPLACE_NO_SPACE.sub("", line.lower()) for line in reviews_train]
-reviews_train = [REPLACE_WITH_SPACE.sub(" ", line) for line in reviews_train]
 
-reviews_test = [REPLACE_NO_SPACE.sub("", line.lower()) for line in reviews_test]
-reviews_test = [REPLACE_WITH_SPACE.sub(" ", line) for line in reviews_test]
+    REPLACE_NO_SPACE = re.compile("(\.)|(\;)|(\:)|(\!)|(\')|(\?)|(\,)|(\")|(\()|(\))|(\[)|(\])")
+    REPLACE_WITH_SPACE = re.compile("(<br\s*/><br\s*/>)|(\-)|(\/)")
 
 
-# Train model
-print('Number of training examples: {0}'.format(len(labels_train)))
-print('Number of test examples: {0}'.format(len(labels_test)))
-print('Training begins ...')
-nb = BernoulliNBClassifier()
-nb.train(reviews_train, labels_train)
-print('Training complete!')
-print('Number of features found: {0}'.format(len(nb.features)))
+    reviews_train = [REPLACE_NO_SPACE.sub("", line.lower()) for line in reviews_train]
+    reviews_train = [REPLACE_WITH_SPACE.sub(" ", line) for line in reviews_train]
+
+    reviews_test = [REPLACE_NO_SPACE.sub("", line.lower()) for line in reviews_test]
+    reviews_test = [REPLACE_WITH_SPACE.sub(" ", line) for line in reviews_test]
 
 
-# Simple error test metric
-print('Testing model...')
-f = lambda doc, l: 1. if nb.predict(doc) != l else 0.
-num_missed = sum([f(doc, l) for doc, l in zip(reviews_test, labels_test)])
+    # Train model
+    print('Number of training examples: {0}'.format(len(labels_train)))
+    print('Number of test examples: {0}'.format(len(labels_test)))
+    print('Training begins ...')
+    nb = BernoulliNBClassifier()
+    nb.train(reviews_train, labels_train)
+    print('Training complete!')
+    print('Number of features found: {0}'.format(len(nb.features)))
 
-N = len(labels_test) * 1.
-error_rate = round(100. * (num_missed / N), 3)
 
-print('Error rate of {0}% ({1}/{2})'.format(error_rate, int(num_missed), int(N)))
+    # Simple error test metric
+    print('Testing model...')
+    f = lambda doc, l: 1. if nb.predict(doc) != l else 0.
+    num_missed = sum([f(doc, l) for doc, l in zip(reviews_test, labels_test)])
+
+    N = len(labels_test) * 1.
+    error_rate = round(100. * (num_missed / N), 3)
+
+    print('Error rate of {0}% ({1}/{2})'.format(error_rate, int(num_missed), int(N)))
