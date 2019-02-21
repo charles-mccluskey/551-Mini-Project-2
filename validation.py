@@ -9,7 +9,7 @@ def held_out_validation_set(X, Y, ratio, make_model,  error_fun):
     val_Y =  np.copy(Y[cutoff:])
     return (error_fun(model, train_X, train_Y), error_fun(model, val_X, val_Y))
 
-def k_fold_cross_validation(X, Y, k, make_model, error_fun):
+def k_fold_cross_validation(X, Y, k, make_model, model_params, error_fun):
     num_points = np.size(X, 0)
     slices = np.linspace(0, num_points, num = k+1, dtype = int)
     train_err = 0
@@ -17,7 +17,7 @@ def k_fold_cross_validation(X, Y, k, make_model, error_fun):
     for i in range(k):
         train_X = np.concatenate((X[:slices[i]], X[slices[i+1]:]))
         train_Y = np.concatenate((Y[:slices[i]], Y[slices[i+1]:]))
-        model = make_model(train_X, train_Y)
+        model = make_model(train_X, train_Y, model_params)
         train_err += error_fun(model, train_X, train_Y)
         val_X = X[slices[i]:slices[i+1]]
         val_Y = Y[slices[i]:slices[i+1]]

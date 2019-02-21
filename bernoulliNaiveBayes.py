@@ -89,3 +89,26 @@ class BernoulliNBClassifier(object):
                 pred_class = l
 
         return pred_class
+
+
+def make_model2(reviews_train, labels_train):
+
+    # Train model
+    print('Number of training examples: {0}'.format(len(labels_train)))
+    print('Training begins ...')
+    my_nb = BernoulliNBClassifier()
+    my_nb.train(reviews_train, labels_train)
+    print('Training finished!')
+    print('Number of features found: {0}'.format(len(my_nb.fre_words)))
+    return my_nb
+
+def error_fun2(model, X, Y):
+    print('Testing model...')
+    f = lambda doc, l: 1. if model.predict(doc) != l else 0.
+    num_miss = sum([f(doc, l) for doc, l in zip(X, Y)])
+
+    N = len(Y) * 1.
+    error_rate = round(100. * (num_miss / N), 3)
+
+    print('Error rate of {0}% ({1}/{2})'.format(error_rate, int(num_miss), int(N)))
+    return error_rate
