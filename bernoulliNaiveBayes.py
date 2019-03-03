@@ -1,6 +1,5 @@
 import re
 from math import log
-import glob
 from collections import Counter
 
 
@@ -91,8 +90,7 @@ class BernoulliNBClassifier(object):
         return pred_class
 
 
-def make_model2(reviews_train, labels_train):
-
+def make_bernoulli(reviews_train, labels_train, model_params):
     # Train model
     print('Number of training examples: {0}'.format(len(labels_train)))
     print('Training begins ...')
@@ -102,7 +100,7 @@ def make_model2(reviews_train, labels_train):
     print('Number of features found: {0}'.format(len(my_nb.fre_words)))
     return my_nb
 
-def error_fun2(model, X, Y):
+def error_bernoulli(model, X, Y):
     print('Testing model...')
     f = lambda doc, l: 1. if model.predict(doc) != l else 0.
     num_miss = sum([f(doc, l) for doc, l in zip(X, Y)])
@@ -112,3 +110,30 @@ def error_fun2(model, X, Y):
 
     print('Error rate of {0}% ({1}/{2})'.format(error_rate, int(num_miss), int(N)))
     return error_rate
+
+def preprocess(comments):
+    rnp = re.compile("(\.)|(\;)|(\:)|(\!)|(\')|(\?)|(\,)|(\")|(\()|(\))|(\[)|(\])")
+    rs = re.compile("(<br\s*/><br\s*/>)|(\-)|(\/)")
+    comments = [rnp.sub("", line.lower()) for line in comments]
+    comments = [rs.sub(" ", line) for line in comments]
+    return comments
+
+def confusion_matrix_bernoulli(model, X, Y):
+    pred = [model.predict(comment) for comment in X]
+    print("Prediction done")
+    true_pos = 0
+    true_neg = 0
+    false_pos = 0
+    false_neg = 0
+    for i in range(len(Y)):
+        if Y[i] == 'pos':
+            if pred[i] == 'pos':
+                true_pos +=1
+            else :
+                false_neg +=1
+        else:
+            if pred[i] == 'neg':
+                true_neg += 1
+            else:
+                false_pos +=1
+    return [[true_pos/len(Y), false_neg/len(Y), false_pos/len(Y), true_neg/len(Y)]]

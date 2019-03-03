@@ -1,0 +1,36 @@
+detailing the packages you
+used and providing instructions to replicate your results.
+
+There should be 4 Python files in this archive :
+
+-Project2_text_processing.py :
+    Contains the methods to the paths to all the training files and a function to open them.
+    Only imports os
+
+-validation.py :
+    Contains our validation pipeline methods
+    Only imports numpy
+
+-bernoulliNaiveBayes.py:
+    Contains our implementation of a Bernoulli Naive Bayes classifier
+    Imports re, collections.Counter and math.log
+
+-Project2_main.py:
+    Files that runs our experiments, the script starts on line 194.
+    Contains our implementation of stacking using logical regression.
+    Contains model_pipeline which creates a desired model and fits it to the provided data
+    Contains error functions.
+    Imports the other files in this archive, numpy, different classes from sklearn(MultinomialNB, Normalizer,
+    CountVectorizer, svm, tree, StandardScaler, Pipeline, TfidfTransformer and LogisticRegression).
+    It also imports nltk.sentiment.vader.SentimentIntensityAnalyzer
+
+    When ran, it will do 5-fold cross validation on these models in order:
+    -logistic regression with tfidf scores (3 minutes)
+    -logistic regression with binary word counts (3 minutes)
+    -decision tree classifier (4 minutes)
+    -Stacking model (1 hour)
+    -Our implementation of a Bernoulli Naive Bayes classifier (40 minutes)
+    The testing for these last two models is long but that time can be reduced by replacing the 5 in the function call
+    to a lower number.
+
+    For each model, the console will display the training error, validation error and confusion matrix.
